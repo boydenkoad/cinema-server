@@ -8,8 +8,6 @@ export default new class SessionController{
         try{
             const {movieId,hallNumber,date,time,prices} = req.body
 
-            console.log(req.body)
-
             const session = await sessionService.create(movieId,hallNumber,date,time,prices)
     
             return res.json(session)

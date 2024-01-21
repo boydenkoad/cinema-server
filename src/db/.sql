@@ -24,7 +24,7 @@ CREATE TABLE tokens(
     refreshToken VARCHAR,
     user_id INTEGER,
     FOREIGN KEY(user_id) REFERENCES users (id)
-)
+);
 
 CREATE TABLE sessions(
     id SERIAL PRIMARY KEY,
@@ -55,7 +55,7 @@ CREATE TABLE users(
     login VARCHAR(255),
     password VARCHAR(255),
     isActivated BOOLEAN DEFAULT FALSE
-)
+);
 
 
 CREATE TABLE tests(

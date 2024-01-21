@@ -12,29 +12,24 @@ import seatService from './seat.service'
 export default new class SessionService{
     async create(movieId:number,hallNumber:number,date:string,time:{hours:number,minutes:number},prices:PriceDto){
 
-        const hall:IHall = await hallService.getHall(hallNumber)
-
-        if(!hall) throw ApiError.BadRequest('Зал не найден')
-        
+        const hall:IHall = await hallService.getHallByNumber(hallNumber)
 
         try{
             await db.query('BEGIN');
     
-            const session:ISession = (await db.query(queryConstructor.create('sessions', ['hall_number', 'movie_id', 'date']), [hallNumber, movieId, `${date} ${time.hours}:${time.minutes}`])).rows[0]
+            const session:ISession = await (await db.query(queryConstructor.create('sessions', ['hall_number', 'movie_id', 'date']), [hallNumber, movieId, `${date} ${time.hours}:${time.minutes}`])).rows[0]
             
-            console.log(session)
+            if(!session) throw ApiError.BadRequest('Ошибка базы данных')
 
-            const seat = await seatService.createSeat(session.id,hall,prices)
-    
+            const seats = await seatService.createSeat(session.id,hall,prices)
+            
             await db.query('COMMIT')
-
-            return seat
+            
+            return seats
         }catch(e){
-            console.log(e)
             db.query('COMMIT')
             throw e
-        }
-   
+        }   
     }
 
     async getAll(){
