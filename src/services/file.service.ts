@@ -1,4 +1,3 @@
-// import { File } from 'buffer'
 import fs from 'fs'
 import ApiError from '../exceptions/api-error'
 
@@ -12,7 +11,7 @@ export default new class FileService{
         file.name = Date.now() + fileName
 
         fs.writeFile(path,file.data,(err)=>{
-            // console.log(err)
+
         })
     
         return path

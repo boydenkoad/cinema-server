@@ -18,7 +18,7 @@ export default new class TokenService{
 
     async findToken(refreshToken:string){
 
-        const tokenData = (await db.query(queryConstructor.getOne('tokens',['refresh_token']),[refreshToken])).rows[0]
+        const tokenData = (await db.query(queryConstructor.getByParams('tokens',['refresh_token']),[refreshToken])).rows[0]
 
         return tokenData
 
@@ -26,7 +26,7 @@ export default new class TokenService{
 
     async saveToken(userId:number,refreshToken:string){
 
-        const dataToken = (await db.query(queryConstructor.getOne('tokens',['user_id']),[userId])).rows[0]
+        const dataToken = (await db.query(queryConstructor.getByParams('tokens',['user_id']),[userId])).rows[0]
      
 
         if(dataToken){

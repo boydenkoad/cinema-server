@@ -25,7 +25,7 @@ export default new class UserService{
     async getOne(id:number){
 
  
-            const user = (await db.query(queryConstructor.getOne('users',['id'],['id','login','is_activated']),[id])).rows[0]
+            const user = (await db.query(queryConstructor.getByParams('users',['id'],['id','login','is_activated']),[id])).rows[0]
 
             if(!user) throw ApiError.BadRequest('Пользователь не найден')
 
@@ -35,7 +35,7 @@ export default new class UserService{
 
     async create(login:string,pass:string){
         
-        const user = (await db.query(queryConstructor.getOne('users',['login'],['login']),[login])).rows[0]
+        const user = (await db.query(queryConstructor.getByParams('users',['login'],['login']),[login])).rows[0]
 
         if(user) throw ApiError.BadRequest('Логин не доступен') 
 
@@ -65,7 +65,7 @@ export default new class UserService{
 
     async login(login:string,password:string){
         
-        const user:IUser = await (await db.query(queryConstructor.getOne('users',['login']),[login])).rows[0]
+        const user:IUser = await (await db.query(queryConstructor.getByParams('users',['login']),[login])).rows[0]
         
         if(!user || !user.is_activated) throw ApiError.BadRequest('Неверный логин или пароль')
 
@@ -98,7 +98,7 @@ export default new class UserService{
 
     if(!userData||!tokenFromDb) throw ApiError.UnauthorizedError()
 
-    const user:IUser = (await db.query(queryConstructor.getOne('users',['id']),[tokenFromDb['user_id']])).rows[0]
+    const user:IUser = (await db.query(queryConstructor.getByParams('users',['id']),[tokenFromDb['user_id']])).rows[0]
 
     const userDto = new UserDto(user)
 

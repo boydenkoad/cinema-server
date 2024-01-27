@@ -20,14 +20,14 @@ export default new class Genre{
     }
 
     async getOne(id:number){
-        const genre = (await db.query(queryConstructor.getOne('genres',['id']),[id])).rows[0]
+        const genre = (await db.query(queryConstructor.getByParams('genres',['id']),[id])).rows[0]
     
         return genre
     }
     
     async create(genreName:string){
 
-        const isExist = (await db.query(queryConstructor.getOne('genres',['name']),[genreName])).rows[0]
+        const isExist = (await db.query(queryConstructor.getByParams('genres',['name']),[genreName])).rows[0]
 
         if(isExist) throw ApiError.BadRequest('Жанр уже существует')
 

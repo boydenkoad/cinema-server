@@ -17,7 +17,7 @@ function filter(params:string[]){
 
 export const queryConstructor = {
     
-    create(tableName:string,queryParams:string[],isReturn:boolean = true,returnParams?:string[]){
+    create(tableName:string,queryParams:string[],isReturn:boolean = true,returnElements?:string[]){
 
         function valuesGenerate(){
 
@@ -30,7 +30,7 @@ export const queryConstructor = {
             return result
         }
 
-        const query = `INSERT INTO ${tableName}(${queryParams}) VALUES(${valuesGenerate()}) ${isReturn && `RETURNING ${returnParams||`*`}`}`
+        const query = `INSERT INTO ${tableName}(${queryParams}) VALUES(${valuesGenerate()}) ${isReturn && `RETURNING ${returnElements||`*`}`}`
         return query
 
     },
@@ -40,20 +40,21 @@ export const queryConstructor = {
         return query
     },
 
-    getAll(tableName:string,queryParams?:string[]){
+    getAll(tableName:string,returnElements?:string[]){
 
-        const query = `SELECT ${queryParams||'*'} FROM ${tableName}`
+        const query = `SELECT ${returnElements||'*'} FROM ${tableName}`
         return query
     },
 
-    getOne(tableName:string,searchParam:string[],queryParams?:string[]){
+
+    getByParams(tableName:string,searchParam:string[],queryParams?:string[]){
 
         const query  = `SELECT ${queryParams||'*'} FROM ${tableName} ${filter(searchParam)}`
 
         return query
     },
 
-    update(tableName:string,searchParam:string,changeParams:string[],queryParams?:string[]){
+    update(tableName:string,searchParam:string,changeParams:string[],returnElements?:string[]){
 
         function valuesGenerate(){
 
@@ -66,7 +67,7 @@ export const queryConstructor = {
             return result
         }
 
-        const query = `UPDATE ${tableName} SET ${valuesGenerate()} WHERE ${searchParam} = $${changeParams.length + 1} RETURNING ${queryParams||'*'}`
+        const query = `UPDATE ${tableName} SET ${valuesGenerate()} WHERE ${searchParam} = $${changeParams.length + 1} RETURNING ${returnElements||'*'}`
     
         return query
     },

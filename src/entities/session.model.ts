@@ -1,11 +1,9 @@
 export interface ISession{
     id:number
     hallNumber:number
-    movieName:string
-    moviePoster:string
     sessionTime:{
         hours:number,
-        minute:number
+        minutes:number
     }
 }
 

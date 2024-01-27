@@ -12,6 +12,11 @@ CREATE TABLE movies(
     trailer VARCHAR
 );
 
+CREATE TABLE genres(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255)
+);
+
 CREATE TABLE movies_genres(
     movie_id INT NOT NULL,
     genre_id INT NOT NULL,
@@ -41,13 +46,8 @@ CREATE TABLE seats(
     seat_number INT NOT NULL,
     price INT NOT NULL,
     session_id INT NOT NULL,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY(session_id) REFERENCES sessions (id)
-);
-
-
-CREATE TABLE genres(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255)
 );
 
 CREATE TABLE users(
@@ -62,5 +62,7 @@ CREATE TABLE tests(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255)
 );
+
+
 
 SELECT id, hall_number, DATE(date)::TIMESTAMP as date FROM sessions WHERE DATE(date) = DATE '1992-02-21' and hall_number = 1;

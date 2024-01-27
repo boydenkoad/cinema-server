@@ -1,11 +1,15 @@
 import express,{Response,Request,NextFunction}  from 'express' 
 import env from 'dotenv'
-import movieRouter from './routes/movie.router'
 import fileUpload from 'express-fileupload'
+
+import movieRouter from './routes/movie.router'
 import userRouter from './routes/user.router'
+import sessionRouter from './routes/session.router'
+
 import cookieParser from 'cookie-parser'
 import errorMiddleware from './middlewares/error.middleware'
 import admin from './routes/admin/admin.router' 
+ 
 
 env.config()
 
@@ -22,6 +26,7 @@ app.use(express.static('public'))
 app.use(express.static('files'))
 app.use('/movies',movieRouter)
 app.use('/users',userRouter)
+app.use('/sessions',sessionRouter)
 
 app.use('/admin',
 // authMiddleware,

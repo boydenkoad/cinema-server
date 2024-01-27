@@ -15,3 +15,4 @@ router.patch('/:number',hallController.updateHall)
 router.delete('/:number',hallController.deleteHall)
 
 export default router
+

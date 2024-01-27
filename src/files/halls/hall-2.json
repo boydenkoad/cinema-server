@@ -1,1 +1,1 @@
-{"hallNumber":2,"screen":{"position":{"x":20,"y":10},"size":{"width":300,"height":30}},"rows":[{"rowNumber":1}]}
+{"hallNumber":2,"screen":{"position":{"x":20,"y":10},"size":{"width":300,"height":30}},"rows":[{"rowNumber":1,"position":{"x":20,"y":10},"seats":[{"seatNumber":1,"type":"min","position":{"x":20,"y":10}},{"seatNumber":2,"type":"standard","position":{"x":20,"y":10}},{"seatNumber":3,"type":"vip","position":{"x":20,"y":10}}]}]}
