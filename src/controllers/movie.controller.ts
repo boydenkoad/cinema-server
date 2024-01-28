@@ -8,9 +8,14 @@ import genreService from "../services/genre.service";
 
 export default new class MovieController {
   async getAll(req: Request, res: Response, next: NextFunction) {
-    const movies = await movieService.getAll();
+    try{
+      const movies = await movieService.getAll();
 
-    return res.json(movies);
+      return res.json(movies);
+    }catch(e){
+      next(e)
+    }
+    
   }
 
   async getById(req: Request, res: Response, next: NextFunction) {
@@ -29,6 +34,7 @@ export default new class MovieController {
 
   async getBySlug(req: Request, res: Response, next: NextFunction) {
     const { slug } = req.params;
+
 
     try {
       const movie = await movieService.getOneBySlug(slug);

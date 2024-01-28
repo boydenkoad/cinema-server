@@ -10,6 +10,7 @@ export const pool = new Pool({
     database:'cinema',
     password:'admin',
     user:'postgres',
+    connectionTimeoutMillis:30000
 })
 
 // export default pool

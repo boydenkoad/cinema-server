@@ -13,11 +13,13 @@ import { IMovieDb } from '../db/entities/movieDb.enitny'
 export default new class MovieService{
 
     async getAll(){
-        const movies = (await db.query(queryConstructor.getAll('movies'))).rows
+        
+        const movies:IMovieDb[] = (await db.query(queryConstructor.getAll('movies'))).rows
 
         if(!movies.length) throw ApiError.BadRequest('Фильмы отсутствуют.')
 
         return movies
+      
     }
 
     async getOneById(id:number){
