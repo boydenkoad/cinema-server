@@ -3,5 +3,6 @@ export interface ISessionDb{
     hall_number:number
     movie_id:number
     hours:number,
-    minutes:number
+    minutes:number,
+    date:Date,
 }

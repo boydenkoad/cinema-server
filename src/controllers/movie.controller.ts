@@ -34,7 +34,7 @@ export default new class MovieController {
 
   async getBySlug(req: Request, res: Response, next: NextFunction) {
     const { slug } = req.params;
-
+    
 
     try {
       const movie = await movieService.getOneBySlug(slug);

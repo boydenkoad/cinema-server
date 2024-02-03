@@ -8,6 +8,7 @@ const router = Router()
 
 router.post('/',sessionController.createSession)
 router.get('/',sessionController.getAll)
+router.get('/:sessionId',sessionController.getSessionById)
 
 
 export default router

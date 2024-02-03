@@ -39,16 +39,7 @@ CREATE TABLE sessions(
     FOREIGN KEY(movie_id) REFERENCES movies (id)
 );
 
-CREATE TABLE seats(
-    id SERIAL PRIMARY KEY,
-    hall_number INT NOT NULL,
-    row_number INT NOT NULL, 
-    seat_number INT NOT NULL,
-    price INT NOT NULL,
-    session_id INT NOT NULL,
-    is_available BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY(session_id) REFERENCES sessions (id)
-);
+
 
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
@@ -57,11 +48,39 @@ CREATE TABLE users(
     isActivated BOOLEAN DEFAULT FALSE
 );
 
+CREATE TABLE booking(
+    id SERIAL PRIMARY KEY,
+    price INT,
+    email VARCHAR(255),
+    unique_code INT NOT NULL,
+    session_id INT NOT NULL,
+    FOREIGN KEY(session_id) REFERENCES sessions (id)
+);
+
+CREATE TABLE seats(
+    id SERIAL PRIMARY KEY,
+    hall_number INT NOT NULL,
+    row_number INT NOT NULL, 
+    seat_number INT NOT NULL,
+    price INT NOT NULL,
+    session_id INT NOT NULL,
+    booking_id INT,
+    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY(booking_id) REFERENCES booking (id),
+    FOREIGN KEY(session_id) REFERENCES sessions (id)
+);
+
+CREATE TABLE booking_seats(
+
+)
+
+
 
 CREATE TABLE tests(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255)
 );
+
 
 
 

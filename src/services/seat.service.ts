@@ -37,6 +37,15 @@ export default new (class SeatService {
     }
   }
 
+  async getSeatById(id:number){
+
+    const seat:ISeatDb = ( await db.query(queryConstructor.getByParams('seats',['id']),[id])).rows[0]
+
+    if(!seat) throw ApiError.BadRequest('Место не найдено');
+  
+    return seat
+  }
+
   async createSeat(sessionId: number,hallNumber: number,rowNumber: number,seat: ISeat,prices: PriceDto){
 
     try{
@@ -54,12 +63,12 @@ export default new (class SeatService {
 
   }
 
-  async updateSeat(seatId: number) {
+  async updateSeat(seatId: number,bookingId:number) {
     try {
       const seat = (
         await db.query(
-          queryConstructor.update("seats", "id", ["is_available"]),
-          [seatId]
+          queryConstructor.update("seats", "id", ['is_available','booking_id']),
+          [false,bookingId,seatId]
         )
       ).rows[0];
 
@@ -73,4 +82,4 @@ export default new (class SeatService {
   }
 
   async deleteSeat(id: number) {}
-})();
+});

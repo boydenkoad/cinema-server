@@ -5,6 +5,7 @@ import { ISession } from '../entities/session.model'
 import seatService from '../services/seat.service'
 import hallService from '../services/hall.service'
 import { ISeat } from '../entities/hall.model'
+import { dateConstructor } from '../shared/date.constructor'
 
 
 
@@ -12,9 +13,9 @@ export default new class SessionController{
     
     async createSession(req:Request,res:Response,next:NextFunction){
         try{
-            const {movieId,hallNumber,date,time,prices} = req.body
+            const body = req.body
 
-            const session = await sessionService.create(movieId,hallNumber,date,time,prices)
+            const session = await sessionService.create(body)
     
             return res.json(session)
         }catch(e){
@@ -33,7 +34,7 @@ export default new class SessionController{
         }
     }
 
-    async getByDate(req:Request,res:Response,next:NextFunction){
+    async getSessionByDate(req:Request,res:Response,next:NextFunction){
 
         try{
             const {date} = req.params
@@ -48,7 +49,9 @@ export default new class SessionController{
 
                 const genres = await movieService.getGenres(movie.id)
 
-                const sessionsFilter= sessions.filter(session=>session.movie_id = movie.id)
+                const sessionsFilter= sessions.filter(session=>session.movie_id === movie.id)
+
+                if(!sessionsFilter.length) continue
 
                 const movieSession = {
                     movieName:movie.name,
@@ -90,7 +93,7 @@ export default new class SessionController{
         }
     }
 
-    async getSession(req:Request,res:Response,next:NextFunction){
+    async getSessionById(req:Request,res:Response,next:NextFunction){
 
         interface IRow{
             rowNumber:number,
@@ -105,7 +108,9 @@ export default new class SessionController{
 
             const {sessionId} = req.params
 
-            const session = await sessionService.getSessionById(Number(sessionId))
+            
+
+            const session = await sessionService.getSessionById(+sessionId)
 
             const seatsDb = await seatService.getSeats(session.id)
             
@@ -126,6 +131,7 @@ export default new class SessionController{
                         id:seatsDb.filter(el=>el.seat_number === seat.seatNumber && el.row_number === row.rowNumber)[0].id,
                         seatNumber:seat.seatNumber,
                         seatType:seat.type,
+                        isAvailable:seatsDb.filter(el=>el.seat_number === seat.seatNumber && el.row_number === row.rowNumber)[0].is_available,
                         price:seatsDb.filter(el=>el.seat_number === seat.seatNumber && el.row_number === row.rowNumber)[0].price,
                         position:seat.position,
                     }
@@ -135,18 +141,26 @@ export default new class SessionController{
                 rows.push(rowRes)
             }
 
+            const {date,time,longDateFormat} = dateConstructor.getDateAndTime(session.date)
+
             return res.json({
-                sessionId:Number(sessionId),
-                hallNumber:hall.hallNumber,
-                screen:hall.screen,
-                rows:rows
+                session:{
+                    sessionId:session.id,
+                    date:longDateFormat,
+                    time:time
+                },
+                hallScheme:{
+                    hallNumber:hall.hallNumber,
+                    screen:hall.screen,
+                    rows:rows
+                }
+                
             })
 
         }catch(e){
             next(e)
         }
     }
-
 
     async getSessionForAdmins(req:Request,res:Response,next:NextFunction){
         try{
@@ -156,4 +170,5 @@ export default new class SessionController{
         }
     }
 
+    
 }

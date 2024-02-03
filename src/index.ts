@@ -21,6 +21,9 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.static('public'))
 app.use(express.static('files'))
+app.get('/api',(req,res,next)=>{
+    return res.send('Подключен к серверу')
+})
 
 app.use('/api',api)
 app.use('/admin',

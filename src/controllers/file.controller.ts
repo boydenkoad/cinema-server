@@ -16,7 +16,6 @@ export default new class FileController{
 
         const filePath = path.join(__dirname,'..','..','public','images',`${file.name}`)
 
-        console.log(file)
 
         fs.writeFile(path.join(filePath),file.data,(req)=>{
             console.log(req)
@@ -34,9 +33,6 @@ export default new class FileController{
         const {hallName} = req.params
         
         // const hall = fileService.getHall(`hall_1.json`)
-
-        // console.log(hallName)
-        // console.log(hall)
 
         // return res.send(hall)
     }
