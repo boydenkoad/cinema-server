@@ -11,6 +11,7 @@ export const dateConstructor = {
 
         const result = {
             longDateFormat,
+            dateRu:Intl.DateTimeFormat('ru').format(date),
             date:`${day}-${month}-${year}`,
             time:{hours,minutes}
         }
@@ -18,11 +19,12 @@ export const dateConstructor = {
         return result
     },
 
-    getParsDate(date:string){
-        const resultArray = date.split('-')
-        // get: dd-mm-yy return yy-mm-dd
-        return `${resultArray[2]}-${resultArray[1]}-${resultArray[0]}`
-        
+    getParsDate(date:string):string{
+
+        const arr = date.split('.')
+
+        return arr.join('/')
+
     }
 
 }

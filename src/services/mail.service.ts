@@ -7,6 +7,16 @@ export default new class MailService{
         
         const testEmailAccount = await mailer.createTestAccount()
 
+
+        const sent = document.createElement('div')
+
+        sent.innerHTML = `<div>
+        <h1>РОЛБИ СИНИМА<h1>
+        <h3>${to}</h3>
+        <p>ВЫ ЗАБРОНИРОВАЛИ СЕАНС</p>
+        
+        <div>`
+
         const transporter = mailer.createTransport({
             service:'gmail',
             auth:{
@@ -23,8 +33,8 @@ export default new class MailService{
             html:'This <i>message</i> was sent from <strong>Node js<strong> server.',
         })
 
-        console.log(result)
+        
 
-        return result
+        return sent
     }
 }

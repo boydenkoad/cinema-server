@@ -6,6 +6,7 @@ import ApiError from "../exceptions/api-error"
 import {ISeatDb} from "../db/entities/seatDb.entity"
 import { IBookingDb } from "../db/entities/bookingDb.entity"
 import sessionService from "./session.service"
+import { dateConstructor } from "../shared/date.constructor"
 
 export default new class BookingService{
     async createBooking(sessionId:number,email:string,seatId:number[]){
@@ -40,12 +41,10 @@ export default new class BookingService{
 
             const session = await sessionService.getSessionById(booking.session_id)
 
+
         return {
             hallNumber:session.hall_number,
-            time:{
-                hours:session.hours,
-                minutes:session.minutes
-            },
+            time:dateConstructor.getDateAndTime(session.date).time,
             seats:seats.map(seat=>({
                 seatNumber:seat.seat_number,
                 rowNumber:seat.row_number

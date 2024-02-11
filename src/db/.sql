@@ -24,6 +24,14 @@ CREATE TABLE movies_genres(
     FOREIGN KEY(genre_id) REFERENCES genres(id)
 );
 
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    login VARCHAR(255),
+    password VARCHAR(255),
+    isActivated BOOLEAN DEFAULT FALSE
+);
+
+
 CREATE TABLE tokens(
     id SERIAL PRIMARY KEY,
     refreshToken VARCHAR,
@@ -39,14 +47,6 @@ CREATE TABLE sessions(
     FOREIGN KEY(movie_id) REFERENCES movies (id)
 );
 
-
-
-CREATE TABLE users(
-    id SERIAL PRIMARY KEY,
-    login VARCHAR(255),
-    password VARCHAR(255),
-    isActivated BOOLEAN DEFAULT FALSE
-);
 
 CREATE TABLE booking(
     id SERIAL PRIMARY KEY,

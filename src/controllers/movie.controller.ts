@@ -4,6 +4,9 @@ import { IMovie } from "../entities/movie.model";
 import {validationResult} from 'express-validator'
 import ApiError from "../exceptions/api-error";
 import genreService from "../services/genre.service";
+import sessionController from "./session.controller";
+import sessionService from "../services/session.service";
+import { dateConstructor } from "../shared/date.constructor";
 
 
 export default new class MovieController {
@@ -15,7 +18,6 @@ export default new class MovieController {
     }catch(e){
       next(e)
     }
-    
   }
 
   async getById(req: Request, res: Response, next: NextFunction) {
@@ -33,8 +35,7 @@ export default new class MovieController {
   }
 
   async getBySlug(req: Request, res: Response, next: NextFunction) {
-    const { slug } = req.params;
-    
+    const { slug } = req.params
 
     try {
       const movie = await movieService.getOneBySlug(slug);
@@ -44,6 +45,47 @@ export default new class MovieController {
       return res.json({...movie,genres});
 
     } catch (e) {
+      next(e)
+    }
+  }
+
+  async getMovieSessions(req: Request, res: Response, next: NextFunction){
+
+    try{
+
+      const {slug} = req.params
+      
+      const {date} = req.query as {date:string}
+
+      const sessions = await movieService.getMovieSession(slug)
+
+       const currentDate = Intl.DateTimeFormat('ru').format(Date.now())
+
+      if(!date){
+
+        const sessionsFiltered = sessions.filter(sessions=>Intl.DateTimeFormat('ru').format(sessions.date) === currentDate)
+        
+        const result = sessionsFiltered.map(session=>({
+          id:session.id,
+          hallNumber:session.hall_number,
+          time:dateConstructor.getDateAndTime(session.date).time
+        }))
+
+        return res.json(result)
+
+      }
+
+      const sessionsFiltered = sessions.filter(sessions=>Intl.DateTimeFormat('ru').format(sessions.date) === date)
+    
+      const result = sessionsFiltered.map(session=>({
+        id:session.id,
+        hallNumber:session.hall_number,
+        time:dateConstructor.getDateAndTime(session.date).time
+      }))
+
+      return res.json(result)
+
+    }catch(e){
       next(e)
     }
   }
@@ -104,7 +146,6 @@ export default new class MovieController {
       next(e)
 
     }
-   
   }
 
   async addGenre(req: Request, res: Response, next: NextFunction){

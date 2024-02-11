@@ -7,5 +7,8 @@ const router = Router()
 
 router.get('/',movieController.getAll)
 router.get('/:slug',movieController.getBySlug)
+router.get('/:slug/sessions',movieController.getMovieSessions)
+
+
 
 export default router

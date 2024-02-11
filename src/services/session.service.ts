@@ -26,7 +26,7 @@ export default new class SessionService{
             await db.query('BEGIN');
     
             const session:ISession = (await db.query(queryConstructor.create('sessions', ['hall_number', 'movie_id', 'date']), 
-            [hallNumber, movieId, `${date.year}-${date.month}-${date.day} ${time.hours}:${time.minutes}`])).rows[0]
+            [hallNumber, movieId, `${date.day}.${date.month}.${date.year} ${time.hours}:${time.minutes}`])).rows[0]
             
             if(!session) throw ApiError.BadRequest('Ошибка базы данных')
 
@@ -53,7 +53,7 @@ export default new class SessionService{
     
     async getAll(){
         
-        const sessions = (await db.query(queryConstructor.getAll('sessions'))).rows
+        const sessions:ISessionDb[] = (await db.query(queryConstructor.getAll('sessions'))).rows
 
         return sessions
 
@@ -69,27 +69,17 @@ export default new class SessionService{
 
     }
 
-    async getSessionsByDate(date:string){
 
-        const formattedDate = dateConstructor.getParsDate(date)
+    // async getSessionsByDate(date:string){
 
-        const sessions:ISessionDb[] = (await db.query('SELECT id,hall_number,movie_id, EXTRACT(HOUR FROM date) as hours,EXTRACT(MINUTE FROM date) as minutes FROM sessions  WHERE date::date = $1 ORDER BY date ASC ',[formattedDate])).rows
+    //     const formattedDate = dateConstructor.getParsDate(date)
 
-        if(!sessions.length) throw ApiError.BadRequest('Сеансов не найдено')
+    //     console.log({formattedDate})
 
-        return sessions
-    }
+    //     const sessions:ISessionDb[] = (await db.query('SELECT id,hall_number,movie_id, EXTRACT(HOUR FROM date) as hours,EXTRACT(MINUTE FROM date) as minutes FROM sessions  WHERE date::date = $1 ORDER BY date ASC ',[formattedDate])).rows
 
-    async getSessionsByDateAndMovieSlug(date:string,slug:string){
+    //     if(!sessions.length) throw ApiError.BadRequest('Сеансов не найдено')
 
-        const movie = await movieService.getOneBySlug(slug)
-
-        const formattedDate = dateConstructor.getParsDate(date)
-
-        const sessions:ISessionDb[] = (await db.query('SELECT id,hall_number,movie_id, EXTRACT(HOUR FROM date) as hours,EXTRACT(MINUTE FROM date) as minutes FROM sessions  WHERE date::date = $1 AND movie_id = $2 ORDER BY date ASC ',[formattedDate,movie.id])).rows
-
-        if(!sessions.length) throw ApiError.BadRequest('Сеансов не найдено')
-
-        return sessions   
-    } 
+    //     return sessions
+    // }
 }

@@ -3,11 +3,14 @@ import ApiError from "../exceptions/api-error"
 import path from 'path'
 import {  UpdateMovieDto } from "../dto/movie.dto"
 import { IMovie } from "../entities/movie.model"
+import {ISessionDb} from '../db/entities/sessionDb.entity'
 import {pool as db} from '../db/db'
 import { queryConstructor } from "../shared/query.constructor"
 import { IGenre } from "../entities/genre.model"
 import {config} from '../../config'
 import { IMovieDb } from '../db/entities/movieDb.enitny'
+import sessionService from './session.service'
+import { dateConstructor } from '../shared/date.constructor'
 
 
 export default new class MovieService{
@@ -19,7 +22,6 @@ export default new class MovieService{
         if(!movies.length) throw ApiError.BadRequest('Фильмы отсутствуют.')
 
         return movies
-      
     }
 
     async getOneById(id:number){
@@ -29,7 +31,6 @@ export default new class MovieService{
         if(!movie) throw ApiError.BadRequest('Фильм не найден')
 
         return movie
-
     }
 
     async getOneBySlug(slug:string){
@@ -39,8 +40,18 @@ export default new class MovieService{
         if(!movie) throw ApiError.BadRequest('Фильм не найден')
 
         return movie
-
     }
+
+    async getMovieSession(slug:string){
+
+        const movie = await this.getOneBySlug(slug)
+
+        const sessions:ISessionDb[] = (await db.query('SELECT id,hall_number,movie_id,date, EXTRACT(HOUR FROM date) as hours,EXTRACT(MINUTE FROM date) as minutes FROM sessions  WHERE movie_id = $1 ORDER BY date ASC ',[movie.id])).rows
+
+        if(!sessions.length) throw ApiError.BadRequest('Сеансов не найдено')
+
+        return sessions   
+    } 
 
     async create(movieName:string){
 
@@ -73,8 +84,7 @@ export default new class MovieService{
         ['name','actors','country','description','poster','producer','rating','slug','trailer','duration']),
         [name,actors,country,description,poster,producer,rating,slug,trailer,duration,id])).rows[0]
                     
-        return updatedMovie
-       
+        return updatedMovie     
     } 
 
     async addGenre(movieId:number,genreId:number){

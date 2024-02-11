@@ -6,42 +6,12 @@ import seatService from '../services/seat.service'
 import hallService from '../services/hall.service'
 import { ISeat } from '../entities/hall.model'
 import { dateConstructor } from '../shared/date.constructor'
+import { ISessionDb } from '../db/entities/sessionDb.entity'
+import { IMovieDb } from '../db/entities/movieDb.enitny'
+import { IGenre } from '../entities/genre.model'
 
 
-
-export default new class SessionController{
-    
-    async createSession(req:Request,res:Response,next:NextFunction){
-        try{
-            const body = req.body
-
-            const session = await sessionService.create(body)
-    
-            return res.json(session)
-        }catch(e){
-            next(e)
-        }    
-    }
-
-    async getAll(req:Request,res:Response,next:NextFunction){
-        try{
-            const sessions = await sessionService.getAll()
-
-            return res.json(sessions)
-
-        }catch(e){
-            next(e)
-        }
-    }
-
-    async getSessionByDate(req:Request,res:Response,next:NextFunction){
-
-        try{
-            const {date} = req.params
-
-            const sessions = await sessionService.getSessionsByDate(date)
-
-            const movies = await movieService.getAll()
+ async function sortByMovie(sessions:ISessionDb[],movies:IMovieDb[]){
 
             const result:any[] = [] 
 
@@ -61,10 +31,7 @@ export default new class SessionController{
                     sessions:sessionsFilter.map<ISession>(session=>({
                         id:session.id,
                         hallNumber:session.hall_number,
-                        sessionTime:{
-                            hours:Number(session.hours),
-                            minutes:Number(session.minutes)
-                        }  
+                        sessionTime:dateConstructor.getDateAndTime(session.date).time
                     }))
                 }
 
@@ -72,21 +39,52 @@ export default new class SessionController{
 
             } 
 
-            return res.json(result)
-            
-        }catch(e){
-            next(e)
-        }
-
+            return result
     }
 
-    async getByDateAndMovieSlug(req:Request,res:Response,next:NextFunction){
+
+export default new class SessionController{
+    
+    async createSession(req:Request,res:Response,next:NextFunction){
         try{
-            const {date,slug} = req.params
+            const body = req.body
 
-            const sessions = await sessionService.getSessionsByDateAndMovieSlug(date,slug)
+            const session = await sessionService.create(body)
+    
+            return res.json(session)
+        }catch(e){
+            next(e)
+        }    
+    }
 
-            return res.json(sessions)
+    async getAll(req:Request,res:Response,next:NextFunction){
+        try{
+
+            const {date} = req.query
+
+            const sessions = await sessionService.getAll()
+
+            const movies = await movieService.getAll()
+
+            const dateNow = Intl.DateTimeFormat('ru').format(Date.now())
+
+            if(!date){
+
+                const sessionsByDate = sessions.filter(session=> Intl.DateTimeFormat('ru').format(session.date) === dateNow)
+
+                console.log(sessionsByDate)
+
+                const formatSessions = await sortByMovie(sessionsByDate,movies)
+
+                return res.json(formatSessions)
+            
+            }
+
+            const sessionsByDate = sessions.filter(session=> Intl.DateTimeFormat('ru').format(session.date) === date)
+
+            const formatSessions = await sortByMovie(sessionsByDate,movies)
+
+            return res.json(formatSessions)
 
         }catch(e){
             next(e)
@@ -162,13 +160,4 @@ export default new class SessionController{
         }
     }
 
-    async getSessionForAdmins(req:Request,res:Response,next:NextFunction){
-        try{
-            
-        }catch(e){
-            next(e)
-        }
-    }
-
-    
 }
