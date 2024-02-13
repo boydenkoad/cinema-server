@@ -3,7 +3,7 @@ import { IMovieDb } from '../db/entities/movieDb.enitny';
 import { ISessionDb } from '../db/entities/sessionDb.entity';
 import { PriceDto } from '../dto/price.dto';
 import { CreateSeatDto } from '../dto/seat.dto';
-import { CreateSessionDto } from '../dto/session.dto';
+import { CreateSessionDto, ISessionDbMinPrice } from '../dto/session.dto';
 import { IHall} from '../entities/hall.model';
 import { IMovie } from '../entities/movie.model';
 import { ISession } from '../entities/session.model';
@@ -55,7 +55,18 @@ export default new class SessionService{
         
         const sessions:ISessionDb[] = (await db.query(queryConstructor.getAll('sessions'))).rows
 
-        return sessions
+        const result:ISessionDbMinPrice[] = []
+
+        for(let session of sessions){
+            
+            const seats = await seatService.getSeats(session.id)
+
+            const minPrice = seats.sort((a,b)=>a.price - b.price)[0].price
+
+            result.push({...session,minPrice})
+        }
+
+        return result
 
     }
 

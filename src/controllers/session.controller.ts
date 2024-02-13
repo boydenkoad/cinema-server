@@ -9,9 +9,10 @@ import { dateConstructor } from '../shared/date.constructor'
 import { ISessionDb } from '../db/entities/sessionDb.entity'
 import { IMovieDb } from '../db/entities/movieDb.enitny'
 import { IGenre } from '../entities/genre.model'
+import { ISessionDbMinPrice } from '../dto/session.dto'
 
 
- async function sortByMovie(sessions:ISessionDb[],movies:IMovieDb[]){
+ async function sortByMovie(sessions:ISessionDbMinPrice[],movies:IMovieDb[]){
 
             const result:any[] = [] 
 
@@ -30,6 +31,7 @@ import { IGenre } from '../entities/genre.model'
                     slug:movie.slug,
                     sessions:sessionsFilter.map<ISession>(session=>({
                         id:session.id,
+                        minPrice:session.minPrice,
                         hallNumber:session.hall_number,
                         sessionTime:dateConstructor.getDateAndTime(session.date).time
                     }))
