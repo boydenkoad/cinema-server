@@ -4,8 +4,6 @@ import { IMovie } from "../entities/movie.model";
 import {validationResult} from 'express-validator'
 import ApiError from "../exceptions/api-error";
 import genreService from "../services/genre.service";
-import sessionController from "./session.controller";
-import sessionService from "../services/session.service";
 import { dateConstructor } from "../shared/date.constructor";
 
 

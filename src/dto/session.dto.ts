@@ -1,3 +1,4 @@
+import { ISessionDb } from "../db/entities/sessionDb.entity"
 import { PriceDto } from "./price.dto"
 
 export interface CreateSessionDto{
@@ -15,4 +16,8 @@ export interface CreateSessionDto{
     }
     
     prices:PriceDto
+}
+
+export interface ISessionDbMinPrice extends ISessionDb{
+    minPrice:number
 }
