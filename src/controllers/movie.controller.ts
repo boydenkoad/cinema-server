@@ -5,14 +5,27 @@ import {validationResult} from 'express-validator'
 import ApiError from "../exceptions/api-error";
 import genreService from "../services/genre.service";
 import { dateConstructor } from "../shared/date.constructor";
+import { IMovieDb } from "../db/entities/movieDb.enitny";
+import { IGenre } from "../entities/genre.model";
+import { IMovieResult } from "../dto/movie.dto";
 
 
 export default new class MovieController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try{
+  
+      const result:any = []
+
       const movies = await movieService.getAll();
 
-      return res.json(movies);
+      for(let movie of movies){
+
+        const genres = await movieService.getGenres(movie.id)
+      
+        await result.push({...movie,genres})
+      }
+
+      return res.json(result);
     }catch(e){
       next(e)
     }
