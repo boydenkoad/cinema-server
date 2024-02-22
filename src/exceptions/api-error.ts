@@ -15,4 +15,5 @@ export default class ApiError extends Error{
     static BadRequest(massage:string,errors:any[] = []){
         return new ApiError(400,massage,errors)
     }
+
 }
