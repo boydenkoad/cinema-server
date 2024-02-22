@@ -16,6 +16,8 @@ import { dateConstructor } from '../shared/date.constructor'
 export default new class MovieService{
 
     async getAll(){
+
+        console.log(db)
         
         const movies:IMovieDb[] = (await db.query(queryConstructor.getAll('movies'))).rows
 

@@ -1,7 +1,7 @@
 import {Pool} from 'pg'
-import env from 'dotenv'
+// import env from 'dotenv'
 
-env.config()
+// env.config()
 
 
 export const pool = new Pool({
@@ -10,7 +10,7 @@ export const pool = new Pool({
     database:process.env.DATABASE_NAME,
     password:process.env.DATABASE_PASSWORD,
     user:process.env.DATABASE_USER,
-    connectionTimeoutMillis:30000
+    // connectionTimeoutMillis:30000
 })
 
 // export default pool
