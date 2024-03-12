@@ -24,13 +24,21 @@ export default new class HallController{
             next(e)
         }
     }
+
+    async getAll(req:Request,res:Response,next:NextFunction){
+        try{
+            const halls = await hallService.getAll()
+            return res.json(halls)
+        }catch(e){
+            next(e)
+        }
+         
+    }
     
     async getHallByNumber(req:Request,res:Response, next:NextFunction){
         try{
             const {number} = req.params
         
-            
-
             const hall = await fileService.getHallByNumber(Number(number))
     
             return res.json(hall)
@@ -42,9 +50,9 @@ export default new class HallController{
 
     async updateHall(req:Request,res:Response,next:NextFunction){
         
+
         try{
             const hall = await hallService.updateHall(Number(req.params.number),req.body)
-
             return res.json(JSON.parse(hall))
 
         }catch(e) {

@@ -24,6 +24,8 @@ router.get('/',movieController.getAll)
 
 router.post('/',body('name').isLength({min:1}),movieController.create)
 
+router.delete('/:id',movieController.deleteMovie)
+
 router.get('/:id',movieController.getById)
 
 router.patch('/:id',movieController.update)
@@ -32,7 +34,7 @@ router.post('/:id/poster',movieController.addPoster)
 
 router.post('/:id/genres',movieController.addGenre)
 
-router.delete('/:id/genres',movieController.deleteGenre)
+router.put('/:id/genres',movieController.deleteGenre)
 
 
 export default router

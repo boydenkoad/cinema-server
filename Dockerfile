@@ -10,7 +10,7 @@ CMD [ "node" ]
 #production mode
 
 FROM node:latest AS production
-ENV NODE_PATH /server/node_modules
+# ENV NODE_PATH /server/node_modules
 # RUN apk add --no-cache tzdata
 WORKDIR /opt/server/
 

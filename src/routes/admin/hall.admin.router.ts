@@ -10,6 +10,7 @@ body('hallNumber')
 .isLength({min:1})
 .isNumeric(), hallController.createHall)
 
+router.get('/',hallController.getAll)
 router.get('/:number',hallController.getHallByNumber)
 router.patch('/:number',hallController.updateHall)
 router.delete('/:number',hallController.deleteHall)

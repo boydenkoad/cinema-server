@@ -1,6 +1,7 @@
 import express,{Response,Request,NextFunction}  from 'express' 
 import env from 'dotenv'
 import fileUpload from 'express-fileupload'
+import cors from 'cors'
 
 
 import cookieParser from 'cookie-parser'
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 3400
 
 const app = express()
 
+app.use(cors())
 app.use(fileUpload())
 app.use(cookieParser())
 app.use(express.json())

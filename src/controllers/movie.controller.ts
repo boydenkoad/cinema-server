@@ -125,6 +125,24 @@ export default new class MovieController {
     }
   }
 
+  async deleteMovie(req: Request, res: Response, next: NextFunction){
+    
+    const id = +req.params.id
+
+    try{
+
+      if(!id){
+        next(ApiError.BadRequest(`Невырный id: ${id}`))
+      }
+
+      const movie = await movieService.deleteMovie(id)
+
+      return res.status(200).json(movie)
+    }catch(e){
+       next(e)
+    }
+  }
+
   async update(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
 
@@ -133,7 +151,9 @@ export default new class MovieController {
     try {
       const newMovie = await movieService.update(movie, Number(id));
 
-      return res.json(newMovie);
+      const genres = await movieService.getGenres(movie.id)
+
+      return res.json({...newMovie,genres});
     } catch (e) {
       next(e)
     }
@@ -143,7 +163,7 @@ export default new class MovieController {
 
     try{
       const {id} = req.params
-
+      
       const file:any = req.files
   
       if(!file) next(ApiError.BadRequest('Ошибка файла контроллер'))
@@ -160,13 +180,20 @@ export default new class MovieController {
   }
 
   async addGenre(req: Request, res: Response, next: NextFunction){
+
     try{
 
-      const genreDb = await genreService.getOne(req.body.id)
+      for(let genreId of req.body.genresId){
 
-      if(!genreDb) return next(ApiError.BadRequest('Жанр не существует'))
+        const genreDb = await genreService.getOne(genreId)
 
-      await movieService.addGenre(Number(req.params.id),req.body.id)
+        if(!genreDb) return next(ApiError.BadRequest(`Жанра с id ${genreId} не существует`))
+      }
+
+
+      for(let genreId of req.body.genresId){
+        await movieService.addGenre(Number(req.params.id),genreId)
+      }
       
       const genres = await movieService.getGenres(Number(req.params.id))
 
@@ -180,14 +207,23 @@ export default new class MovieController {
   }
 
   async deleteGenre(req: Request, res: Response, next: NextFunction){
+
     try{
 
-      const genreDb = await genreService.getOne(req.body.id)
+      const genresId = req.body.genresId
 
-      if(!genreDb) return next(ApiError.BadRequest('Жанр не существует'))
+      for(let genreId of genresId){
 
-      await movieService.removeGenre(Number(req.params.id),req.body.id)
+        const genreDb = await genreService.getOne(genreId)
 
+        if(!genreDb) return next(ApiError.BadRequest('Жанр не существует'))
+
+      }
+
+      for(let genreId of genresId){
+        await movieService.removeGenre(Number(req.params.id),genreId)
+      }
+     
       const genres = await movieService.getGenres(Number(req.params.id))
 
       return res.json(genres)

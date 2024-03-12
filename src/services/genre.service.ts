@@ -55,6 +55,9 @@ export default new class Genre{
 
     async remove(id:number){
         try{
+
+            await db.query(queryConstructor.remove('movies_genres',['genre_id']),[id])
+
             const genre = (await db.query(queryConstructor.remove('genres',['id']),[id])).rows[0]
             return genre
         }catch(e){

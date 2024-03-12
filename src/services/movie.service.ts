@@ -11,17 +11,14 @@ import {config} from '../../config'
 import { IMovieDb } from '../db/entities/movieDb.enitny'
 import sessionService from './session.service'
 import { dateConstructor } from '../shared/date.constructor'
+import genreService from './genre.service'
 
 
 export default new class MovieService{
 
     async getAll(){
-
-        console.log(db)
-        
+   
         const movies:IMovieDb[] = (await db.query(queryConstructor.getAll('movies'))).rows
-
-        if(!movies.length) throw ApiError.BadRequest('Фильмы отсутствуют.')
 
         return movies
     }
@@ -62,6 +59,16 @@ export default new class MovieService{
         return movie
     }
 
+    async deleteMovie(id:number){
+        const movie = await this.getOneById(id)
+
+        await db.query(queryConstructor.remove('movies_genres',['movie_id']),[id])
+        
+        await db.query(queryConstructor.remove('movies',['id']),[id])
+
+        return movie
+    }
+
     async update(movieDto:UpdateMovieDto,id:number){
 
         const movieDb:IMovie = (await db.query(queryConstructor.getByParams('movies',['id']),[id])).rows[0]
@@ -73,7 +80,6 @@ export default new class MovieService{
         movieDb.country = movieDto.country || movieDb.country
         movieDb.description = movieDto.description || movieDb.description
         movieDb.genres = movieDto.genres || movieDb.genres
-        movieDb.poster = movieDto.poster || movieDb.poster
         movieDb.producer = movieDto.producer || movieDb.producer
         movieDb.rating = movieDto.rating || movieDb.rating
         movieDb.slug = movieDto.slug || movieDb.slug
@@ -103,7 +109,7 @@ export default new class MovieService{
     async addPoster(movieId:number,file:any){
 
         const movieDb = (await db.query(queryConstructor.getByParams('movies',['id']),[movieId])).rows[0]
-
+        
         if(!movieDb) throw ApiError.BadRequest('Фильм не найден')
 
         if(!file['file']) throw ApiError.BadRequest('Ошибка файла')
@@ -111,9 +117,8 @@ export default new class MovieService{
         const fileObject = file['file']
 
         const pathDir = path.join(config.images,`${fileObject.name}`)
-
-        const posterUrl = path.join(config.baseUrl,'public','images','poster',`${fileObject.name}`)
-
+ 
+        const posterUrl = `${config.baseDNS}/static/${fileObject.name}`
 
         fs.writeFileSync(pathDir,fileObject.data)
 

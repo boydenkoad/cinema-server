@@ -4,6 +4,7 @@ import ApiError from '../exceptions/api-error'
 import { IHall } from '../entities/hall.model'
 
 const hallPath = (number:string|number)=>path.join(__dirname,'..','files','halls',`hall-${number}.json`)
+const hallsDir = path.join(__dirname,'..','files','halls')
 
 export default new class HallService{
     
@@ -19,6 +20,30 @@ export default new class HallService{
 
         return hallNumber
         
+    }
+
+    async getAll(){
+        try{
+            const result:any[] = []
+
+            const halls = fs.readdirSync(hallsDir)
+
+            if(halls.length){
+                for(let i = 0; i < halls.length; i++){
+                    const hall:IHall = JSON.parse(fs.readFileSync(path.join(hallsDir,halls[i]),'utf-8'))
+
+                    const {hallNumber} = hall
+
+                    result.push({hallNumber})
+                }
+            }
+
+            return result
+
+        }catch(e){
+            throw ApiError.BadRequest('Что то пошло не так')
+        }
+       
     }
 
     async getHallByNumber(hallNumber:number):Promise<IHall>{
@@ -43,13 +68,24 @@ export default new class HallService{
         
     }
 
-    async updateHall(hallNumber:number,data:any){
+    async updateHall(hallNumber:number,data:IHall){
+
 
         const hall = fs.existsSync(hallPath(hallNumber))
 
+        const {rows,screen} = data
+
+        const newHall = {
+            hallNumber:hallNumber,
+            screen,
+            rows
+        }
+
+        console.log(newHall)
+
         if(!hall) throw ApiError.BadRequest(`Зал №${hallNumber} нe найден`)
 
-        const dataPars = JSON.stringify(data)
+        const dataPars = JSON.stringify(newHall)
 
         fs.writeFileSync(hallPath(hallNumber),dataPars,'utf-8')
 
