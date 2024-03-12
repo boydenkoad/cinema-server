@@ -28,13 +28,13 @@ CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     login VARCHAR(255),
     password VARCHAR(255),
-    isActivated BOOLEAN DEFAULT FALSE
+    is_activated BOOLEAN DEFAULT FALSE
 );
 
 
 CREATE TABLE tokens(
     id SERIAL PRIMARY KEY,
-    refreshToken VARCHAR,
+    refresh_token VARCHAR,
     user_id INTEGER,
     FOREIGN KEY(user_id) REFERENCES users (id)
 );

@@ -17,7 +17,7 @@ function filter(params:string[]){
 
 export const queryConstructor = {
     
-    create(tableName:string,queryParams:string[],isReturn:boolean = true,returnElements?:string[]){
+    create(tableName:string,queryParams:string[], isReturn:boolean = true, returnElements?:string[]){
 
         function valuesGenerate(){
 
@@ -47,9 +47,9 @@ export const queryConstructor = {
     },
 
 
-    getByParams(tableName:string,searchParam:string[],queryParams?:string[]){
+    getByParams(tableName:string,searchParam:string[],returnElements?:string[]){
 
-        const query  = `SELECT ${queryParams||'*'} FROM ${tableName} ${filter(searchParam)}`
+        const query  = `SELECT ${returnElements||'*'} FROM ${tableName} ${filter(searchParam)}`
 
         return query
     },

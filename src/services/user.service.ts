@@ -12,25 +12,18 @@ const salt = 6
 export default new class UserService{
     
     async getAll(){
-        try{
-            const users = (await db.query(queryConstructor.getAll('users',['id','login','is_activated']))).rows
-            return users
-
-        }catch(e){
-            throw ApiError.BadRequest('Некорректный запрос')
-        }
-        
+        const users = (await db.query(queryConstructor.getAll('users',['id','login','is_activated']))).rows
+        return users
     }
     
     async getOne(id:number){
 
- 
-            const user = (await db.query(queryConstructor.getByParams('users',['id'],['id','login','is_activated']),[id])).rows[0]
+        const user = (await db.query(queryConstructor.getByParams('users',['id'],['id','login','is_activated']),[id])).rows[0]
 
-            if(!user) throw ApiError.BadRequest('Пользователь не найден')
+        if(!user) throw ApiError.BadRequest('Пользователь не найден')
 
-            return user
-   
+        return user
+
     }
 
     async create(login:string,pass:string){
@@ -65,7 +58,7 @@ export default new class UserService{
 
     async login(login:string,password:string){
         
-        const user:IUser = await (await db.query(queryConstructor.getByParams('users',['login']),[login])).rows[0]
+        const user:IUser =  (await db.query(queryConstructor.getByParams('users',['login']),[login])).rows[0]
         
         if(!user || !user.is_activated) throw ApiError.BadRequest('Неверный логин или пароль')
 

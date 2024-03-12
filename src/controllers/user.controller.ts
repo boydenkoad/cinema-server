@@ -7,10 +7,14 @@ import tokenService from '../services/token.service'
 export default new class UserController{
     
     async getAll(req:Request,res:Response,next:NextFunction){
-        
-        const users = await userService.getAll()
+        try{
+            const users = await userService.getAll()
         
         return res.json(users)
+        }catch(e){
+            next(e)
+        }
+        
     }
 
     async getOne(req:Request,res:Response,next:NextFunction){
