@@ -16,14 +16,14 @@ import genreService from './genre.service'
 
 export default new class MovieService{
 
-    async getAll(){
+    async getAll():Promise<IMovieDb[]>{
    
         const movies:IMovieDb[] = (await db.query(queryConstructor.getAll('movies'))).rows
 
         return movies
     }
 
-    async getOneById(id:number){
+    async getOneById(id:number):Promise<IMovieDb>{
 
         const movie = (await db.query(queryConstructor.getByParams('movies',['id']),[id])).rows[0]
     
@@ -106,7 +106,7 @@ export default new class MovieService{
         return relation
     }
 
-    async addPoster(movieId:number,file:any){
+    async addPoster(movieId:number,file:any):Promise<IMovieDb>{
 
         const movieDb = (await db.query(queryConstructor.getByParams('movies',['id']),[movieId])).rows[0]
         
@@ -118,11 +118,11 @@ export default new class MovieService{
 
         const pathDir = path.join(config.images,`${fileObject.name}`)
  
-        const posterUrl = `${config.baseDNS}/static/${fileObject.name}`
+        // const  = `${}`
 
         fs.writeFileSync(pathDir,fileObject.data)
 
-        const movie = (await db.query(queryConstructor.update('movies','id',['poster']),[posterUrl,movieId])).rows[0]
+        const movie = (await db.query(queryConstructor.update('movies','id',['poster']),[fileObject.name,movieId])).rows[0]
         
         return movie
     }

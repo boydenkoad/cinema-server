@@ -8,6 +8,7 @@ import { dateConstructor } from "../shared/date.constructor";
 import { IMovieDb } from "../db/entities/movieDb.enitny";
 import { IGenre } from "../entities/genre.model";
 import { IMovieResult } from "../dto/movie.dto";
+import { config } from "../../config";
 
 
 export default new class MovieController {
@@ -22,7 +23,12 @@ export default new class MovieController {
 
         const genres = await movieService.getGenres(movie.id)
       
-        await result.push({...movie,genres})
+        const {poster,...movieResult} = movie
+
+        await result.push({
+          ...movieResult,
+          poster:`${config.baseDNS}/static/${poster}`,
+          genres})
       }
 
       return res.json(result);
@@ -38,7 +44,15 @@ export default new class MovieController {
 
       const genres = await movieService.getGenres(movie.id)
 
-      return res.json({...movie,genres});
+      const {
+        poster,...result
+      } = movie
+
+      return res.json({
+        ...result,
+        poster:`${config.baseDNS}/static/${poster}`,
+        genres
+      });
 
     } catch (e) {
       next(e)
@@ -168,9 +182,11 @@ export default new class MovieController {
   
       if(!file) next(ApiError.BadRequest('Ошибка файла контроллер'))
     
-      const poster = await movieService.addPoster(Number(id),file)
+      const movie = await movieService.addPoster(Number(id),file)
 
-      return res.send(poster)
+      const {poster} = movie
+
+      return res.send(`${config.baseDNS}/static/${poster}`)
 
     }catch(e){
 

@@ -14,3 +14,5 @@ export type IMovie = {
     trailer:string
     genres:IGenre[]
 }
+
+

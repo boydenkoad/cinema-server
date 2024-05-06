@@ -16,7 +16,20 @@ export default new class HallService{
             throw ApiError.BadRequest(`Зал с номером ${hallNumber} существует.`)
         }
 
-        fs.writeFileSync(hallPath(hallNumber),`{"hallNumber":${hallNumber}}`)
+        fs.writeFileSync(hallPath(hallNumber),`{
+            "hallNumber":${hallNumber},
+            "screen":{
+                "position": {
+                    "x": 0,
+                    "y": 0
+                },
+                "size": {
+                    "width": 0,
+                    "height": 0
+                }
+            },
+            "rows":[]
+        }`)
 
         return hallNumber
         
@@ -77,11 +90,16 @@ export default new class HallService{
 
         const newHall = {
             hallNumber:hallNumber,
-            screen,
+            screen:screen|| ` "position": {
+                "x": 0,
+                "y": 0
+            },
+            "size": {
+                "width": 0,
+                "height": 0
+            }`,
             rows
         }
-
-        console.log(newHall)
 
         if(!hall) throw ApiError.BadRequest(`Зал №${hallNumber} нe найден`)
 
